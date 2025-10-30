@@ -51,7 +51,7 @@ faasr_get_file(server_name="My_Minio_Bucket", local_file="output.csv", remote_fi
 
 ### faasr_get_folder_list
 
-Usage: `folderlist <- faasr_get_folder_list(server_name, faasr_prefix)`
+Usage: `folderlist = faasr_get_folder_list(server_name, faasr_prefix)`
 
 This function returns a list with the contents of a folder in the S3 bucket. 
 
@@ -63,8 +63,8 @@ This is an optional argument; if not provided, the default S3 server specified a
 Examples:
 
 ```py
-mylist1 <- faasr_get_folder_list(server_name="My_Minio_Bucket", faasr_prefix="myfolder")
-mylist2 <- faasr_get_folder_list(server_name="My_Minio_Bucket", faasr_prefix="myfolder/mysubfolder")
+mylist1 = faasr_get_folder_list(server_name="My_Minio_Bucket", faasr_prefix="myfolder")
+mylist2 = faasr_get_folder_list(server_name="My_Minio_Bucket", faasr_prefix="myfolder/mysubfolder")
 ```
 
 ### faasr_delete_file
