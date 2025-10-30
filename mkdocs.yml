@@ -8,7 +8,7 @@ theme:
 nav:
   - 'Home': 'index.md'
   - 'Tutorial': 'tutorial.md'
-  - 'Documentation':
+  - 'User Documentation':
     - 'FaaSr workflow model': 'prog_model.md'
     - 'Setting up the FaaSr-workflow repo': 'workflow_repo.md'
     - 'Creating functions': 'functions.md'
@@ -27,6 +27,9 @@ nav:
     - 'Default values': 'defaults.md'
     - 'Advanced usage': 'advanced.md'
     - 'Security best practices': 'security.md'
+  - 'Dev Documentation':
+    - 'PR Processes': 'pull_requests.md'
+    - 'Building containers': 'docker_build.md'
   - 'About': 'about.md'
   - 'Community': 'community.md'
   - 'Contact': 'contact.md'
