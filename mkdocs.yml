@@ -1,5 +1,5 @@
 site_name: FaaSr - Serverless workflows made easy
-site_url: https://faasr.github.io/FaaSr-Docs
+site_url: https://owicky.github.io/FaaSr-Docs
 theme:
   name: material
   logo: assets/faasr_logo.jpg
