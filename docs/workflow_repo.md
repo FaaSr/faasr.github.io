@@ -74,7 +74,7 @@ Before you can register and invoke workflows, you need to create secrets storing
 
 - The default compute server name for AWS Lambda is `OW`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
-- You need one secret named: `OW_API.key` 
+- You need one secret named: `OW_APIKey` 
 - The secret you store under this name is the API key you obtained from your OpenWhisk provider
 
 ### Slurm
