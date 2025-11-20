@@ -1,5 +1,5 @@
 site_name: FaaSr - Serverless workflows made easy
-site_url: https://owicky.github.io/FaaSr-Docs
+site_url: https://faasr.io
 theme:
   name: material
   logo: assets/faasr_logo.jpg
@@ -37,3 +37,4 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+copyright: FaaSr is funded in part by grants from the National Science Foundation (OAC-2450241 and OAC-2311124). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.

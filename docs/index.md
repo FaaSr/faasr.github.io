@@ -1,6 +1,4 @@
-# Introduction and Overview
-
-![alt text](assets/faasr_logo.jpg)
+# Overview
 
 FaaSr is serverless Function-as-a-Service cloud software that makes it easy for
 developers to create functions and compose them in workflow graphs that can run
