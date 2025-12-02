@@ -17,6 +17,7 @@ nav:
     - 'Registering workflows': 'register_workflow.md'
     - 'Invoking workflows': 'invoke_workflow.md'
     - 'Retrieving logs': 'logs.md'
+    - 'Obtaining an S3 bucket': 's3.md'
     - 'Concurrent actions and ranks': 'rank.md'
     - 'Conditional invocation': 'conditional.md'
     - 'Invocation IDs': 'invocationid.md'

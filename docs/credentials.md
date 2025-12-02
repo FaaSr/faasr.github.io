@@ -3,7 +3,7 @@
 ## S3 data server
 
 - In general, the credentials you need from your S3 account are the `AccessKey` and the `SecretKey`. These are akin to user names and passwords.
-- How you obtain these credentials will depend on your provider (e.g. AWS S3, MINIO, OSN - see below)
+- How you obtain these credentials will depend on your provider (e.g. AWS S3, MINIO, OSN see the [S3] document for additional information)
 - Paste the access key and the secret key as _Repository secrets_ in your _FaaSr-workflow_ as per the instructions in the [workflow repo] documentation
 
 ## GitHub Actions
@@ -45,11 +45,6 @@ In summary:
 
 TBD
 
-## Academic cloud providers
-
-### Open Storage Network
-
-- For researchers in the US, you can [request an allocation](https://www.openstoragenetwork.org/get-involved/get-an-allocation/) of 10+ TB S3 storage.
-- If your request is approved, you will be assigned one S3 bucket, and can then copy the access and secret keys provided to you for use with FaaSr
 
 [workflow repo]: workflow_repo.md
+[S3]: s3.md
