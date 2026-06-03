@@ -27,10 +27,13 @@ nav:
     - 'Creating cloud credentials': 'credentials.md'
     - 'Default values': 'defaults.md'
     - 'Advanced usage': 'advanced.md'
+    - 'Provisioning EphFlow VMs': 'vm.md'
     - 'Security best practices': 'security.md'
   - 'Dev Documentation':
+    - 'Code repositories': 'repositories.md'
     - 'PR Processes': 'pull_requests.md'
     - 'Building containers': 'docker_build.md'
+    - 'Developing the workflow builder': 'workflow_builder.md'
   - 'About': 'about.md'
   - 'Community': 'community.md'
   - 'Contact': 'contact.md'
