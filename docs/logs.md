@@ -7,7 +7,7 @@ Logs produced by FaaSr functions using the `faasr_log()` API are stored in an S3
 ## Selecting an S3 bucket for logs
 
 - In the typical scenario, a single S3 server/bucket can be used for both workflow files and logs, but you may also use separate buckets
-- The S3 server used for logs is configured as the **Default server to store logs** under **Workflow settings** in the [FaaSr Workflow Builder Web UI] 
+- The S3 server used for logs is configured as the **Default server to store logs** under **Workflow settings** in the [FaaSr Workflow Builder Web UI] (this corresponds to the `LoggingDataStore` field in the workflow JSON)
 
 ## Log folder naming convention
 

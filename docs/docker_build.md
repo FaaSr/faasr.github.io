@@ -50,7 +50,7 @@ Once you have successfully built the base containers for Python and/or R, you wi
 * In `name of the FaaS-specific image to build`, enter the name of the image. This _does not_ include your account name or tag - e.g. for python the default names we use are: `github-actions-python` and for r `github-actions-r`
 * In `FaaSr-py version` enter the same release number of the FaaSr-Backend used when building the base image, e.g. `2.1.0`
 * In `GitHub repo to install FaaSr-py from` enter the repo to build the Backend from. Typically this is the main `faasr/FaaSr-Backend` repo, but you can build from your own repo as well (e.g. if have forked FaaSr-Backend to develop and test a new feature)
-* In `GitHub Container Repository (GHCR) to push image to` enter the name of your github account to publish the image to
+* In `GitHub Container Repository (GHCR) to push image to` enter the name of your github account to publish the image to. This must be the GitHub account/username that owns the target GHCR namespace, since it is also used to authenticate the push
 * Run the workflow; once completed, it will publish the image to your GHCR account, e.g. `ghcr.io/yourusername/github-actions-python:2.1.0`
 
 ### OpenWhisk

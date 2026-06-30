@@ -8,7 +8,9 @@ to ask questions and connect with other users
 ## Report bugs, feature requests
 
 [Submit an issue on GitHub](https://github.com/FaaSr/FaaSr-Backend/issues)
-if you would like to report a bug or feature request
+if you would like to report a bug or feature request.
+
+For issues specific to a particular component, you can also use that component's repository issue tracker - for example FaaSr-workflow-builder, FaaSr-Docker, or FaaSr-Docs.
 
 ## Contact project leads
 

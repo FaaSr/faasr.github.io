@@ -140,3 +140,59 @@ Example:
 invocation_id = faasr_invocation_id()
 print(invocation_id)
 ```
+
+### faasr_get_s3_creds
+
+Usage: `faasr_get_s3_creds()`
+
+Returns the credentials and connection details for an S3 data store as a dictionary, so you can construct your own S3 client (for example, a `pyarrow` filesystem) when the standard get/put file APIs are not sufficient. Uses the `DefaultDataStore` specified in the workflow configuration JSON file.
+
+Example:
+
+```py
+creds = faasr_get_s3_creds()
+```
+
+### faasr_secret
+
+Usage: `faasr_secret(secret_name)`
+
+Returns the value of a named secret from your workflow's secret store. This is useful for passing credentials such as third-party API keys to your function.
+
+`secret_name` is a string with the name of the secret to retrieve, as configured in your workflow.
+
+Example:
+
+```py
+api_key = faasr_secret("OpenWeather_API_Key")
+```
+
+### faasr_return
+
+Usage: `faasr_return(return_value)`
+
+Returns a value from your user function to FaaSr. This is the mechanism used for [conditional invocation]: return `True` or `False` to determine which successor action(s) are invoked.
+
+`return_value` is the value (typically `True` or `False`) returned to FaaSr.
+
+Example:
+
+```py
+faasr_return(True)
+```
+
+### faasr_exit
+
+Usage: `faasr_exit(message=None, error=True, traceback=None)`
+
+Terminates the current function early and reports back to FaaSr, optionally with a message.
+
+`message` is a string with the message to report. `error` indicates whether this is an error exit (defaults to `True`). `traceback` is an optional traceback string.
+
+Example:
+
+```py
+faasr_exit(message="Input file missing", error=True)
+```
+
+[conditional invocation]: conditional.md

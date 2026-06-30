@@ -43,7 +43,7 @@ Before you can register and invoke workflows, you need to create secrets storing
 ### S3 data store servers
 
 - When creating a workflow with the [FaaSr Workflow Builder Web UI], you are asked to enter a name for your S3 data server(s)
-- The default compute server name for an S3 server is `S3`
+- The default data store name for an S3 server is `S3`
 - Assume the name of a data server you are setting the secrets for is `S3`, you need two secrets, named exactly as follows (replace `S3` with the name of the server you configured)
 - `S3_AccessKey`
 - `S3_SecretKey`
