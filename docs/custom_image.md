@@ -1,156 +1,115 @@
-# Building a fully custom image: the FLARE example
+# Building a custom container image
 
-The [Advanced usage] page describes the *light* path for customizing a container:
-add packages to a base image, optionally with small edits to a platform-specific
-Dockerfile. That path keeps the standard FaaSr build structure intact and is the
-right choice for most workflows.
+The [Advanced usage] page covers the *light* path for customizing a container: pick a
+base image and add packages to it through the base image's dependency manifests. That
+path is enough for most workflows and should always be your first choice.
 
-Some workflows need more than that. When a function depends on a binary that has
-to be **compiled from source**, on a **non-FaaSr base image**, or on a build that
-**adds its own stages and steps**, you write a dedicated Dockerfile and a dedicated
-build workflow instead of editing the stock ones. This page walks through a complete,
-real example that does all three: the **GLM-AED-FLARE** image used to run the
-[FLARE](https://github.com/FLARE-forecast) lake water-quality forecast as a FaaSr
-action.
+Some workflows need more — for example a binary that has to be **compiled from source**,
+or an R/Python package installed from a **specific GitHub branch**, or a **custom entry
+point**. None of those can be expressed by simply listing packages. This page shows the
+recommended way to build a fully custom image for cases like these, using the
+**GLM-AED-FLARE** image (used to run the [FLARE](https://github.com/FLARE-forecast) lake
+water-quality forecast) as a running example.
 
 !!! note
-    This is a *worked example*, not a different product. It uses the same
-    [FaaSr-Docker repository](https://github.com/FaaSr/FaaSr-Docker) and the same
-    GitHub Actions build mechanism described in [Building containers] — it just adds
-    its own Dockerfile and workflow rather than reusing the generic ones.
+    This page describes a *recommended* structure. The FLARE image that ships in
+    FaaSr-Docker today works correctly but is built slightly differently (it does
+    everything in a single Dockerfile); the differences, and why the layered approach
+    below is preferable for new images, are summarized in
+    [How the shipped FLARE image differs](#how-the-shipped-flare-image-differs).
 
-## When you need a fully custom image
+## The guiding principle
 
-Reach for a dedicated Dockerfile (rather than the base-image customization in
-[Advanced usage]) when:
+A FaaSr image is built in two layers (see [Building containers]):
 
-- A dependency must be **compiled from source** for the runner architecture — there
-  is no installable package or reliable prebuilt binary (here: the GLM hydrodynamic
-  engine).
-- You want to build **from a specialized base image** rather than a FaaSr base — for
-  example `rocker/geospatial`, which already carries the geospatial system libraries
-  and R packages the forecast needs.
-- Your build needs **extra stages or steps** — a separate compile stage, copying a
-  built artifact into the runtime image, a custom entry point, and so on.
-- You want to **parameterize what gets installed** (e.g. install your model package
-  from a configurable repository and branch) so the same Dockerfile can build several
-  variants.
+- a **base image** — a language runtime plus common dependencies, built with the
+  `py-base` / `rocker-base` build actions;
+- a **platform-specific image** — built *from* a base image, adding the code needed to
+  run on a provider (GitHub Actions, AWS Lambda, GCP, …).
 
-If none of these apply, prefer adding packages to a base image as described in
-[Advanced usage] — it is simpler to maintain.
+The principle for a custom image is simple:
 
-## Anatomy of the FLARE image
+> **Put as much as possible into a customized base image. Drop down to a dedicated
+> Dockerfile only for the things a package list cannot express.**
 
-The example lives entirely in the [FaaSr-Docker repository](https://github.com/FaaSr/FaaSr-Docker)
-and is made of three files:
+Everything you put in the base is declared once, cached, and reused across rebuilds and
+across every image that builds from it. A dedicated Dockerfile is harder to maintain, so
+you want it to carry only what genuinely needs it.
 
-| File | Role |
+### Decide what goes where
+
+| If you need to… | Put it in… |
 | --- | --- |
-| `faas_specific/github-actions-glm-aed-flare-rs.Dockerfile` | The custom multi-stage Dockerfile |
-| `faas_specific/glm_aed_flare_rs_packages.txt` | The list of R packages baked into the image |
-| `.github/workflows/build_github_actions_glm_aed_flare_rs.yml` | The GitHub Actions workflow that builds and publishes the image to GHCR |
+| Start from a specialized stack (e.g. geospatial) | the base image — set `BUILD_FROM` when building it |
+| Install system libraries (`apt`) | the base image — `apt-packages.txt` |
+| Install CRAN / PyPI / GitHub-released packages | the base image — `R_packages.R` / `requirements.txt` |
+| Compile a binary from source | a dedicated Dockerfile (multi-stage) |
+| Install a package from a specific Git **branch/commit** chosen at build time | a dedicated Dockerfile (parameterized `ARG`) |
+| Ship a custom entry point | a dedicated Dockerfile |
 
-To create your own custom image, you add a parallel set of three files (your
-Dockerfile, your package manifest, your build workflow) to your fork of FaaSr-Docker.
+## Recommended path, with FLARE as the example
 
-## The Dockerfile, step by step
+### Step 1 — Build a base image that matches your science
 
-The Dockerfile uses a **multi-stage build**: the first stage compiles GLM, the second
-stage is the actual runtime image and copies in only the compiled binary. This keeps
-the build toolchain (compilers, dev headers) out of the final image.
+The FLARE forecast's first hard dependency is the R package **`ncdf4`**, which compiles
+against the NetCDF development headers (`libnetcdf-dev`); it also pulls in `udunits2`,
+`CFtime`, and friends. The default FaaSr R base is built from `rocker/tidyverse`, which
+does **not** include those system libraries — so `ncdf4` would fail to build on it.
 
-### Stage 1 — compile GLM from source
+`rocker/geospatial` already provides GDAL, GEOS, PROJ, **`libnetcdf-dev`**, and udunits,
+plus prebuilt spatial R packages. So the right move is to build a FaaSr base **from**
+geospatial. When you run the `rocker-base` build action (see [Building containers]):
+
+- set **`BUILD_FROM`** to `rocker/geospatial:4.4.2`
+- set **`BASE_NAME`** to something descriptive, e.g. `base-flare`
+
+This produces a base that has the FaaSr runtime *and* the geospatial system stack. Add
+the forecast's CRAN packages (`rLakeAnalyzer`, `tidymodels`, `arrow`, `rstac`,
+`aws.s3`, …) to the base's `R_packages.R` so they are baked in and reused.
+
+!!! tip
+    The `rocker-base` action's own input documentation already lists `base-geospatial`
+    and `base-flare` as example base names — building a geospatial-derived base is an
+    anticipated, supported pattern, not a workaround.
+
+### Step 2 — Add a dedicated Dockerfile for what the base can't carry
+
+Three things in the FLARE image cannot be expressed as a package list, so they belong in
+a dedicated platform Dockerfile that builds **`FROM` your `base-flare` image**:
+
+**Compile GLM from source (multi-stage).** GLM (the hydrodynamic engine FLARE drives)
+has no reliable prebuilt binary for every runner architecture, so it is compiled in a
+throwaway build stage and only the resulting binary is copied into the runtime image:
 
 ```dockerfile
-ARG BASE_IMAGE=rocker/geospatial:4.4.2
-
-# --- Stage 1: build GLM (v4alpha) from source for the runner architecture ---
-FROM $BASE_IMAGE AS glm_builder
+# --- build stage: compile GLM, kept out of the final image ---
+FROM <your-base-flare-image> AS glm_builder
 RUN apt-get update && apt-get install -y \
-    git build-essential gfortran libnetcdf-dev libgd-dev libxml2-dev \
-    m4 fakeroot debhelper \
-    && rm -rf /var/lib/apt/lists/*
+    git build-essential gfortran libnetcdf-dev libgd-dev libxml2-dev m4 fakeroot debhelper
 WORKDIR /build
 RUN git clone --depth 1 https://github.com/AquaticEcoDynamics/AED_Tools.git \
-    && cd AED_Tools \
-    && ./fetch_sources.sh glm \
+    && cd AED_Tools && ./fetch_sources.sh glm \
     && cd GLM && git fetch origin && git switch v4alpha && cd .. \
-    && ./clean.sh \
-    && ./build_glm.sh --no-gui
-```
+    && ./clean.sh && ./build_glm.sh --no-gui
 
-GLM (General Lake Model) is the hydrodynamic engine FLARE drives. A prebuilt binary is
-not reliably available for every runner architecture, so the image compiles `v4alpha`
-from source using the AquaticEcoDynamics build scripts. Everything this stage installs
-(`build-essential`, `gfortran`, the NetCDF/GD dev headers, `fakeroot`/`debhelper`) is
-needed only to compile — none of it leaks into the runtime image.
-
-### Stage 2 — the runtime image
-
-The second stage starts fresh from the same base and declares the build arguments that
-parameterize the image:
-
-```dockerfile
-FROM $BASE_IMAGE
-
-ARG FAASR_VERSION          # FaaSr-py version to install
-ARG FAASR_INSTALL_REPO     # GitHub repo to install FaaSr from
-ARG FLARER_INSTALL_REPO    # GitHub repo to install FLAREr from
-ARG FLARER_VERSION         # FLAREr branch / tag / commit
-ARG GITHUB_PAT             # token for install_github (see rate-limit note)
-ENV GITHUB_PAT=${GITHUB_PAT}
-```
-
-Parameterizing `FLARER_INSTALL_REPO` and `FLARER_VERSION` means the same Dockerfile can
-build the image against the canonical FLAREr repository **or** against your own fork and
-development branch — you choose at build time without editing the Dockerfile.
-
-It then installs the runtime system libraries (only the *runtime* NetCDF/GD/gfortran
-libraries, not the dev headers) and copies the GLM binary out of stage 1:
-
-```dockerfile
-RUN apt-get update && apt-get install -y \
-    python3 python3-pip libgd3 libgd-dev libnetcdf19t64 libgfortran5 curl \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Copy the GLM binary compiled in stage 1
+# --- runtime stage ---
+FROM <your-base-flare-image>
 COPY --from=glm_builder /build/AED_Tools/GLM/glm /opt/glm/glm
 RUN chmod +x /opt/glm/glm
 ENV GLM_PATH=/opt/glm/glm
 ```
 
-`GLM_PATH` tells the forecast code where to find the binary at runtime.
-
-Next it installs the FaaSr runtime and the R packages:
+**Install the model package from a build-time-chosen branch.** Exposing the install
+repo and version as build arguments lets the same Dockerfile build against the canonical
+FLAREr repository *or* against your own fork and development branch, without edits:
 
 ```dockerfile
-# Ubuntu 24.04's Python 3.12 enforces PEP 668; the override is safe inside a
-# container because this is the only Python environment.
-RUN pip3 install --no-cache-dir --break-system-packages \
-    "git+https://github.com/${FAASR_INSTALL_REPO}.git@${FAASR_VERSION}"
-
-COPY glm_aed_flare_rs_packages.txt /tmp/required_packages.txt
-RUN Rscript -e "packages <- readLines('/tmp/required_packages.txt'); install.packages(packages, dependencies = TRUE)"
-
+ARG FLARER_INSTALL_REPO
+ARG FLARER_VERSION
 RUN Rscript -e "library(remotes); install_github(paste0('${FLARER_INSTALL_REPO}', '@', '${FLARER_VERSION}'), dependencies = TRUE)"
 ```
 
-FaaSr-py is installed with pip from a Git URL built out of the `FAASR_INSTALL_REPO` and
-`FAASR_VERSION` arguments. The `--break-system-packages` flag is required because the
-base image runs Ubuntu 24.04, whose Python enforces PEP 668; it is safe here because the
-container has a single, dedicated Python environment. The R packages come from the
-manifest file (below), and FLAREr is installed from the configurable repo and branch.
-
-The forecast also depends on the ecological-forecasting ecosystem, installed from GitHub:
-
-```dockerfile
-RUN Rscript -e "library(remotes); install_github('eco4cast/neon4cast', dependencies = TRUE)"
-RUN Rscript -e "library(remotes); install_github('eco4cast/score4cast', dependencies = TRUE)"
-RUN Rscript -e "library(remotes); install_github('eco4cast/read4cast', dependencies = TRUE)"
-RUN Rscript -e "library(remotes); install_github('LTREB-reservoirs/vera4castHelpers', dependencies = TRUE)"
-```
-
-Finally it sets the platform and installs the entry point:
+**Ship the platform entry point**, as any platform image does:
 
 ```dockerfile
 ENV FAASR_PLATFORM="github"
@@ -160,71 +119,42 @@ WORKDIR /action
 CMD ["python3", "faasr_entry.py"]
 ```
 
-The image ships a FLARE-specific entry point (`faasr_entry_flare.py`) copied to the
-location FaaSr expects (`/action/faasr_entry.py`).
+Because the geospatial stack and the CRAN packages already live in `base-flare`, this
+Dockerfile stays small: it only compiles GLM, installs the model package from the branch
+you point it at, and installs the entry point.
 
-!!! tip "Avoiding the GitHub API rate limit"
-    Several steps call `install_github`. Anonymous GitHub API access is limited to 60
-    requests per hour, which a multi-package install can exhaust, causing the build to
-    fail. Passing a token through the `GITHUB_PAT` build argument (the build workflow
-    wires in the built-in `GITHUB_TOKEN`) raises the limit and makes the build reliable.
+!!! tip "Avoid the GitHub API rate limit"
+    Steps that call `install_github` hit the GitHub API, which is limited to 60 requests
+    per hour for anonymous access — enough to fail a multi-package install. Pass a token
+    through a `GITHUB_PAT` build argument (the FLARE build wires in the workflow's
+    built-in `GITHUB_TOKEN`) to raise the limit and make the build reliable.
 
-## The package manifest
+### Step 3 — Build and publish the image
 
-The R packages baked into the image are listed one per line in
-`faas_specific/glm_aed_flare_rs_packages.txt` and installed in a single `install.packages`
-call. Keeping the list in a separate file makes it easy to add or remove packages without
-touching the Dockerfile. An excerpt:
+Give your custom Dockerfile its own `workflow_dispatch` GitHub Actions workflow whose
+inputs map onto its build arguments, so you can rebuild variants from the Actions tab.
+The FLARE build (`build_github_actions_glm_aed_flare_rs.yml`) exposes:
+
+| Input | Example | Purpose |
+| --- | --- | --- |
+| `BASE_IMAGE` | `rocker/geospatial:4.4.2` *(or your `base-flare`)* | base for the build |
+| `TARGET_NAME` | `github-actions-glm-aed-flare-rs` | image name |
+| `FAASR_VERSION` | `2.0.5` | FaaSr-py version |
+| `FLARER_INSTALL_REPO` | `Ashish-Ramrakhiani/FLAREr` | repo to install the model from |
+| `FLARER_VERSION` | `flare-io-on-netcdf-v2` | model branch / tag / commit |
+| `GHCR_IO_REPO` | *(your namespace)* | GHCR namespace to push to |
+
+The workflow logs in to GHCR with the built-in `GITHUB_TOKEN`, builds the image, and
+pushes it with both a version tag and `latest`:
 
 ```text
-contentid
-rLakeAnalyzer
-tidymodels
-arrow
-RcppRoll
-rstac
-aws.s3
-zip
-...
+ghcr.io/<your-namespace>/github-actions-glm-aed-flare-rs:2.0.5
+ghcr.io/<your-namespace>/github-actions-glm-aed-flare-rs:latest
 ```
 
-## The build workflow
+### Step 4 — Use the image in a workflow
 
-The image is built and published by its own GitHub Actions workflow,
-`.github/workflows/build_github_actions_glm_aed_flare_rs.yml`, triggered manually with
-`workflow_dispatch`. Its inputs map directly onto the Dockerfile's build arguments:
-
-| Input | Default | Purpose |
-| --- | --- | --- |
-| `BASE_IMAGE` | `rocker/geospatial:4.4.2` | base image for both build stages |
-| `TARGET_NAME` | `github-actions-glm-aed-flare-rs` | name of the image to build |
-| `FAASR_VERSION` | `2.0.5` | FaaSr-py version tag |
-| `FAASR_INSTALL_REPO` | `FaaSr/FaaSr-Backend` | repo to install FaaSr-py from |
-| `FLARER_INSTALL_REPO` | `Ashish-Ramrakhiani/FLAREr` | repo to install FLAREr from |
-| `FLARER_VERSION` | `flare-io-on-netcdf-v2` | FLAREr branch / tag / commit |
-| `GHCR_IO_REPO` | *(your namespace)* | GHCR namespace to push the image to |
-
-To build it:
-
-1. In the FaaSr-Docker fork, go to **Actions** and select
-   **build-glm-aed-flare-rs-container -> GHCR**.
-2. Click **Run workflow** and adjust the inputs if needed (for example, point
-   `FLARER_INSTALL_REPO` / `FLARER_VERSION` at your own fork and branch).
-3. Run it. The workflow logs in to GHCR, builds the image, and pushes it with both the
-   version tag and `latest`, e.g.:
-   ```text
-   ghcr.io/<your-namespace>/github-actions-glm-aed-flare-rs:2.0.5
-   ghcr.io/<your-namespace>/github-actions-glm-aed-flare-rs:latest
-   ```
-
-The workflow authenticates to GHCR with the repository's built-in `GITHUB_TOKEN` and also
-passes that token to the build as `GITHUB_PAT`, so no extra secret is required for the
-`install_github` steps.
-
-## Using the image in a workflow
-
-Once the image is published, reference it per-action in your workflow JSON under
-`ActionContainers`, mapping each action name to your image:
+Reference the published image per-action in your workflow JSON under `ActionContainers`:
 
 ```json
 "ActionContainers": {
@@ -243,21 +173,35 @@ containers** checkbox.
 
 ## Reusable techniques
 
-The FLARE image demonstrates patterns you can apply to any custom scientific-computing
+The FLARE image demonstrates patterns that apply to any custom scientific-computing
 image:
 
+- **Match the base to the science** — start from a base such as `rocker/geospatial` that
+  already carries the heavy system libraries your packages compile against, and build
+  your FaaSr base from it.
 - **Multi-stage compile-from-source** — build a binary in a throwaway stage and copy only
   the result into the runtime image, keeping the toolchain out of the published image.
-- **A specialized base image** — start from a base such as `rocker/geospatial` that
-  already carries heavy system and language dependencies, and install the FaaSr runtime
-  into it.
 - **Parameterized installs** — expose install repositories and versions as build
   arguments so one Dockerfile builds multiple variants (canonical vs. your fork).
-- **A package manifest file** — keep long dependency lists out of the Dockerfile.
 - **A token for `install_github`** — pass `GITHUB_PAT` to avoid the anonymous API rate
   limit during the build.
 - **A custom entry point** — ship your own `faasr_entry.py` when the function needs
   bespoke startup behavior.
+
+## How the shipped FLARE image differs
+
+The `glm-aed-flare-rs` image currently in FaaSr-Docker works correctly and does not need
+to change. It differs from the recommended path above in one way: it does everything in a
+**single Dockerfile built directly from `rocker/geospatial`**, rather than first building
+a reusable `base-flare` image. As a result it installs the FaaSr runtime and the full
+CRAN package list inside that one Dockerfile (using a `glm_aed_flare_rs_packages.txt`
+manifest installed with a single `install.packages` call, and a
+`--break-system-packages` pip install to satisfy PEP 668 on Ubuntu 24.04).
+
+That is a perfectly valid way to produce a working image. For **new** custom images,
+prefer the layered approach: it pushes the reusable environment (geospatial stack + CRAN
+packages) into a base image that is cached and shared, and keeps the dedicated Dockerfile
+small and focused on the parts that truly require it.
 
 [Advanced usage]: advanced.md
 [Building containers]: docker_build.md

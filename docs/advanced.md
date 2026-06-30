@@ -41,7 +41,7 @@ The platform-specific Dockerfiles live in the `faas_specific/` folder. If you ne
 
 ### Going further: a fully custom image
 
-The customization above keeps the standard FaaSr build structure. When a function needs a binary compiled from source, a non-FaaSr base image, or extra build stages, you can instead write a dedicated Dockerfile and build workflow. The [Building a custom image (FLARE example)] page walks through a complete real example - the GLM-AED-FLARE image used to run the FLARE lake forecast as a FaaSr action.
+The customization above keeps the standard FaaSr build structure. When a function needs a binary compiled from source, a package installed from a specific Git branch, or a custom entry point, you combine a customized base image with a dedicated Dockerfile. The [Building a custom image (FLARE example)] page describes the recommended path for doing this, using the GLM-AED-FLARE lake-forecast image as a worked example.
 
 ### Using a custom image in a workflow
 
