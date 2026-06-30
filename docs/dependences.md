@@ -15,6 +15,12 @@ Import the dependence in your function, e.g. *library('ridigbio')*
 
 ## Python dependences
 
+When you create/edit a Python Action in the Web UI, scrolling the left pane to the bottom there are entries for:
+
+- *GitHub Packages for the Function*: this can be used to install a package hosted in a GitHub repository. Provide the name of the GitHub repository to install from (e.g. *owner/repo*); FaaSr installs it with `pip install` from the corresponding GitHub URL
+- *PyPI Packages for the Function*: this can be used to install a package hosted on PyPI. Provide the name of the package in the text box, for example *numpy*
+
+Import the dependence in your function, e.g. *import numpy*
 
 [FaaSr R APIs]: r_api.md
 [FaaSr Python APIs]: py_api.md

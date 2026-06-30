@@ -39,11 +39,14 @@ In summary:
 
 - You need a private secret key to use Google Cloud Platform (GCP) with FaaSr
 - You can access your key from the [Google Cloud console](https://console.cloud.google.com)
-- TBD
+- In the console, create a service account for your project with the permissions needed to run Cloud Run jobs, then create and download a key for that service account
+- Paste the service account key under the name `GCP_SecretKey` as a _Repository secret_ in your _FaaSr-workflow_ as per the instructions in the [workflow repo] documentation
 
 ## Slurm
 
-TBD
+- You need an authentication token (a JWT) from your Slurm cluster to use Slurm with FaaSr
+- How you obtain this token depends on your cluster's configuration; many clusters issue one via the `scontrol token` command or through your site's REST API portal - consult your Slurm administrator if you are unsure
+- Paste the token under the name `SLURM_Token` as a _Repository secret_ in your _FaaSr-workflow_ as per the instructions in the [workflow repo] documentation
 
 
 [workflow repo]: workflow_repo.md
