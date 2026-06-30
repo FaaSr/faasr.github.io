@@ -39,6 +39,10 @@ Add the packages your functions require to the appropriate file(s), then rebuild
 
 The platform-specific Dockerfiles live in the `faas_specific/` folder. If you need to add dependences at this layer, you may edit these files to add them - but you **must not** modify the `WORKDIR`, `ARG`, `RUN`, `COPY`, `FROM`, and `CMD` statements, as these are required for the container to run correctly under FaaSr. In most cases it is preferable to add your dependences to the base image instead.
 
+### Going further: a fully custom image
+
+The customization above keeps the standard FaaSr build structure. When a function needs a binary compiled from source, a non-FaaSr base image, or extra build stages, you can instead write a dedicated Dockerfile and build workflow. The [Building a custom image (FLARE example)] page walks through a complete real example - the GLM-AED-FLARE image used to run the FLARE lake forecast as a FaaSr action.
+
 ### Using a custom image in a workflow
 
 Once your custom image is built and published to a container registry (e.g. DockerHub, GHCR, or ECR), you can use it in a workflow:
@@ -53,6 +57,7 @@ Once your custom image is built and published to a container registry (e.g. Dock
 
 [default values]: defaults.md
 [package dependences]: dependences.md
+[Building a custom image (FLARE example)]: custom_image.md
 [Building containers]: docker_build.md
 [FaaSr Workflow Builder Web UI]: workflows.md
 [Creating and editing workflows]: workflows.md
