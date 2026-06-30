@@ -12,7 +12,7 @@ without any code changes, with a primary use case in scientific workflows
 FaaSr supports the following cloud computing platforms:
 
 - __[GitHub Actions]__ - free-tier resources for small-scale workflows
-- __[AWS Lambda]__ - commercial cloud for scalable, low-latency worrkflows
+- __[AWS Lambda]__ - commercial cloud for scalable, low-latency workflows
 - __[Google Cloud Run]__ - commercial cloud for resource-intensive workflows
 - __[OpenWhisk]__ - open-source FaaS platform for private clouds
 - __[Slurm]__ - open-source job schedulers for private HPC clusters

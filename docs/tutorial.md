@@ -30,7 +30,7 @@ Before you can register and invoke workflows, you need to create secrets storing
 - In the _FaaSr-workflow_ repo you just forked, click on the _Settings_ tab (top of the page, to the right)
 - Scroll down; on the left pane, click on the pull-down _Secrets and variables_ and select _Actions_
 - Click on the green _New repository secret_ to enter a new secret
-- Enter the proper _Name_ for each of the three secrets below (one for GitHub actions, two for Minio Play) and past the secret itself in the _Secret_ text box:
+- Enter the proper _Name_ for each of the three secrets below (one for GitHub actions, two for Minio Play) and paste the secret itself in the _Secret_ text box:
 - Click on _Add secret_ and add a secret named `GH_PAT`, pasting your GitHub PAT created in the previous step
 - Click on _Add secret_ and add a secret named `S3_AccessKey`, pasting the following text: `Q3AM3UQ867SPQQA43P2F`
 - Click on _Add secret_ and add a secret named `S3_SecretKey`, pasting the following text: `zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG`
@@ -92,7 +92,7 @@ The tutorial.json workflow is based on two R functions (start, compute_sum). Ano
 - importing `https://github.com/FaaSr/FaaSr-Functions/blob/main/tutorial/tutorialRpy.json` into the WebUI
 - edit your username
 - download tutorialRpy.json to your computer
-- upload tutorilRpy.json to your FaaSr-workflow repo
+- upload tutorialRpy.json to your FaaSr-workflow repo
 - `(FAASR REGISTER)` tutorialRpy.json
 - `(FAASR INVOKE)` tutorialRpy.json
 

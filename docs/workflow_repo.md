@@ -65,21 +65,21 @@ Before you can register and invoke workflows, you need to create secrets storing
 
 ### Google Cloud
 
-- The default compute server name for AWS Lambda is `GCP`
+- The default compute server name for Google Cloud is `GCP`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
 - You need one secret named: `GCP_SecretKey` 
 - The secret you store under this name is the secret key you obtained from Google Cloud
 
 ### OpenWhisk
 
-- The default compute server name for AWS Lambda is `OW`
+- The default compute server name for OpenWhisk is `OW`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
 - You need one secret named: `OW_APIKey` 
 - The secret you store under this name is the API key you obtained from your OpenWhisk provider
 
 ### Slurm
 
-- The default compute server name for AWS Lambda is `SLURM`
+- The default compute server name for Slurm is `SLURM`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
 - You need one secret named: `SLURM_Token` 
 - The secret you store under this name is the JWT token you obtained from your Slurm provider
