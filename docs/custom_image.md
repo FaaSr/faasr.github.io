@@ -109,7 +109,23 @@ ARG FLARER_VERSION
 RUN Rscript -e "library(remotes); install_github(paste0('${FLARER_INSTALL_REPO}', '@', '${FLARER_VERSION}'), dependencies = TRUE)"
 ```
 
-**Ship the platform entry point**, as any platform image does:
+**Ship a custom entry point** when your function needs setup the standard entry point
+does not perform. FLARE needs one specific thing: its R code resolves paths **relative to
+the repository root** (where the `configuration/` directory lives), but FaaSr extracts a
+function's GitHub repository into a tarball folder (e.g. `Owner-Repo-<sha>`), so the
+working directory at startup is not the repo root. The FLARE entry point therefore locates
+the configuration directory and changes the working directory to the repo root *before*
+the function runs:
+
+```python
+def setup_flare_configuration_directory():
+    # find the configuration/ directory, then chdir to the repo root above it
+    # so FLARE's relative paths (config, observations) resolve correctly
+    ...
+    os.chdir(repo_root)
+```
+
+It is then installed exactly as any platform image installs its entry point:
 
 ```dockerfile
 ENV FAASR_PLATFORM="github"
@@ -118,6 +134,13 @@ COPY faasr_entry_flare.py /action/faasr_entry.py
 WORKDIR /action
 CMD ["python3", "faasr_entry.py"]
 ```
+
+!!! tip "Keep a custom entry point a minimal delta"
+    A custom entry point should add only your function-specific logic (here, the working-
+    directory setup) on top of the standard `faasr_entry.py`. Resist folding in unrelated
+    fixes: if you find a general improvement while editing your copy, contribute it back to
+    the standard entry point instead. Otherwise your fork and the standard file drift apart
+    and become hard to keep in sync.
 
 Because the geospatial stack and the CRAN packages already live in `base-flare`, this
 Dockerfile stays small: it only compiles GLM, installs the model package from the branch
@@ -186,7 +209,9 @@ image:
 - **A token for `install_github`** — pass `GITHUB_PAT` to avoid the anonymous API rate
   limit during the build.
 - **A custom entry point** — ship your own `faasr_entry.py` when the function needs
-  bespoke startup behavior.
+  pre-execution setup the standard entry does not do (most commonly setting the working
+  directory to the repo root so relative paths resolve), and keep it a minimal delta over
+  the standard entry.
 
 ## How the shipped FLARE image differs
 
@@ -197,6 +222,10 @@ a reusable `base-flare` image. As a result it installs the FaaSr runtime and the
 CRAN package list inside that one Dockerfile (using a `glm_aed_flare_rs_packages.txt`
 manifest installed with a single `install.packages` call, and a
 `--break-system-packages` pip install to satisfy PEP 668 on Ubuntu 24.04).
+
+Its custom entry point also carries a couple of general (non-FLARE) tweaks that were
+edited directly into the forked copy; following the "minimal delta" guidance above, such
+changes are better contributed back to the standard entry point so the two do not drift.
 
 That is a perfectly valid way to produce a working image. For **new** custom images,
 prefer the layered approach: it pushes the reusable environment (geospatial stack + CRAN
