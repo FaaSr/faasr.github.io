@@ -97,6 +97,6 @@ There is also an arm64 build process available for OpenWhisk - simply follow sim
 
 If you need to customize your Dockerfiles with particular dependences, these can be found in the `faas_specific` folder. Edit as needed to add your dependences; you must not change the `WORKDIR`, `ARG`, `RUN`, `COPY`, `FROM` and `CMD` statements - you can only add dependences.
 
-If you need to go beyond adding dependences - for example, compiling a binary from source, installing a package from a specific Git branch, or shipping a custom entry point - you combine a customized base image with a dedicated Dockerfile. See [Building a custom image (FLARE example)](custom_image.md) for the recommended path and a worked example.
+If you need to go beyond adding dependences - for example, compiling a binary from source, installing a package from a specific Git branch, or shipping a custom entry point - you combine a customized base image with a dedicated Dockerfile. See [Building a custom image](custom_image.md) for the recommended path and a worked example.
 
 

@@ -163,8 +163,8 @@ The FLARE build (`build_github_actions_glm_aed_flare_rs.yml`) exposes:
 | `BASE_IMAGE` | `rocker/geospatial:4.4.2` *(or your `base-flare`)* | base for the build |
 | `TARGET_NAME` | `github-actions-glm-aed-flare-rs` | image name |
 | `FAASR_VERSION` | `2.0.5` | FaaSr-py version |
-| `FLARER_INSTALL_REPO` | `Ashish-Ramrakhiani/FLAREr` | repo to install the model from |
-| `FLARER_VERSION` | `flare-io-on-netcdf-v2` | model branch / tag / commit |
+| `FLARER_INSTALL_REPO` | `<owner>/FLAREr` | GitHub repo to install the model package from |
+| `FLARER_VERSION` | `<branch-or-tag>` | model branch / tag / commit to install |
 | `GHCR_IO_REPO` | *(your namespace)* | GHCR namespace to push to |
 
 The workflow logs in to GHCR with the built-in `GITHUB_TOKEN`, builds the image, and
