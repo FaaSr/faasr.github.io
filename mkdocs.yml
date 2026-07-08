@@ -27,6 +27,7 @@ nav:
     - 'Creating cloud credentials': 'credentials.md'
     - 'Running on AWS Lambda': 'aws_lambda.md'
     - 'Running on Google Cloud': 'google_cloud.md'
+    - 'Running on Kubernetes (NRP)': 'kubernetes.md'
     - 'Default values': 'defaults.md'
     - 'Advanced usage': 'advanced.md'
     - 'Provisioning EphFlow VMs': 'vm.md'
