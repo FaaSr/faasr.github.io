@@ -19,7 +19,7 @@ Before building any platform-specific containers (e.g. for GH, AWS, GCP), you ne
 
 ### Building Python base container
 
-* In `Actions`, select `py-base->DockerHub`
+* In `Actions`, select `py-base -> DockerHub`
 * Click on `Run workflow`
 * In `username:tag` to build from, typically you will leave the default (e.g. `python:3.13`)
 * In `name to be used for this base FaaSr image` you also typically leave the default, `base-python`
@@ -28,12 +28,15 @@ Before building any platform-specific containers (e.g. for GH, AWS, GCP), you ne
 
 ### Building R/Rocker base container
 
-* In `Actions`, select `rocker-base->DockerHub`
+* In `Actions`, select `rocker-base -> DockerHub`
 * Click on `Run workflow`
 * In `username:tag` to build from, typically you will leave the default (e.g. `rocker/tidyverse:4.4`)
 * In `name to be used for this base FaaSr image` you also typically leave the default, `base-r`
 * In `FaaSr version tag`, enter the tag of the `FaaSr-Backend` repository to build from. Typically, this will be the current release of FaaSr, e.g. `2.1.0`
 * Run the workflow; once completed, it will publish the image to your DockerHub account, e.g. `yourname/base-r:2.1.0`
+
+!!! note
+    A third base build action, `r-base -> DockerHub`, also exists but is deprecated and intended for testing purposes only. Use `rocker-base -> DockerHub` for images that run R functions.
 
 ## Building platform-specific containers
 
@@ -41,41 +44,39 @@ Once you have successfully built the base containers for Python and/or R, you wi
 
 ### GitHub Actions
 
-* Select Action `github-actions->GHCR`
+* Select Action `github-actions -> GHCR`
 * Click `Run workflow`
 * In `user/name:tag of the base FaaSr image`, enter the DockerHub name of one of the image you created above, e.g. `yourname/base-python:2.1.0` or `yourname/base-r:2.1.0`
 * In `name of the FaaS-specific image to build`, enter the name of the image. This _does not_ include your account name or tag - e.g. for python the default names we use are: `github-actions-python` and for r `github-actions-r`
 * In `FaaSr-py version` enter the same release number of the FaaSr-Backend used when building the base image, e.g. `2.1.0`
 * In `GitHub repo to install FaaSr-py from` enter the repo to build the Backend from. Typically this is the main `faasr/FaaSr-Backend` repo, but you can build from your own repo as well (e.g. if have forked FaaSr-Backend to develop and test a new feature)
-* In `GitHub Container Repository (GHCR) to push image to` enter the name of your github account to publish the image to
+* In `GitHub Container Repository (GHCR) to push image to` enter the name of your github account to publish the image to. This must be the GitHub account/username that owns the target GHCR namespace, since it is also used to authenticate the push
 * Run the workflow; once completed, it will publish the image to your GHCR account, e.g. `ghcr.io/yourusername/github-actions-python:2.1.0`
 
 ### OpenWhisk
 
-* Select Action `openwhisk->DockerHub`
+* Select Action `openwhisk -> DockerHub`
 * Click `Run workflow`
 * In `user/name:tag of the base FaaSr image`, enter the DockerHub name of one of the image you created above, e.g. `yourname/base-python:2.1.0` or `yourname/base-r:2.1.0`
 * In `name of the FaaS-specific image to build`, enter the name of the image. This _does not_ include your account name or tag - e.g. for python the default names we use are: `openwhisk-python` and for r `openwhisk-r`
 * In `FaaSr-py version` enter the same release number of the FaaSr-Backend used when building the base image, e.g. `2.1.0`
 * In `GitHub repo to install FaaSr-py from` enter the repo to build the Backend from. Typically this is the main `faasr/FaaSr-Backend` repo, but you can build from your own repo as well (e.g. if have forked FaaSr-Backend to develop and test a new feature)
-* Run the workflow; once completed, it will publish the image to your DockerHub account, e.g. `yourusername/github-actions-python:2.1.0`
-
-There is also an arm64 build process available for OpenWhisk - simply follow similar steps to build the base and OpenWhisk images as above, but use `py-base-arm->DockerHub` and `openwhisk-arm->DockerHub` instead
+* Run the workflow; once completed, it will publish the image to your DockerHub account, e.g. `yourusername/openwhisk-python:2.1.0`
 
 ### AWS Lambda
 
-* Select Action `aws-lambda->ECR`
+* Select Action `aws-lambda -> ECR`
 * Click `Run workflow`
 * In `user/name:tag of the base FaaSr image`, enter the DockerHub name of one of the image you created above, e.g. `yourname/base-python:2.1.0` or `yourname/base-r:2.1.0`
 * In `name of the FaaS-specific image to build`, enter the name of the image. This _does not_ include your account name or tag - e.g. for python the default names we use are: `aws-lambda-python` and for r `aws-lambda-r`
 * In `FaaSr-py version` enter the same release number of the FaaSr-Backend used when building the base image, e.g. `2.1.0`
 * In `GitHub repo to install FaaSr-py from` enter the repo to build the Backend from. Typically this is the main `faasr/FaaSr-Backend` repo, but you can build from your own repo as well (e.g. if have forked FaaSr-Backend to develop and test a new feature)
 * In `AWS ECR region to push image to` enter the region of ECR to publish to
-* Run the workflow; once completed, it will publish the image to your DockerHub account, e.g. `yourECR/aws-lambda-python:2.1.0`
+* Run the workflow; once completed, it will publish the image to your Amazon ECR registry, e.g. `yourECR/aws-lambda-python:2.1.0`
 
 ### Google Cloud
 
-* Select Action `gcp->DockerHub`
+* Select Action `gcp -> DockerHub`
 * Click `Run workflow`
 * In `user/name:tag of the base FaaSr image`, enter the DockerHub name of one of the image you created above, e.g. `yourname/base-python:2.1.0` or `yourname/base-r:2.1.0`
 * In `name of the FaaS-specific image to build`, enter the name of the image. This _does not_ include your account name or tag - e.g. for python the default names we use are: `gcp-python` and for r `gcp-r`
@@ -85,7 +86,7 @@ There is also an arm64 build process available for OpenWhisk - simply follow sim
 
 ### Slurm
 
-* Select Action `slurm->DockerHub`
+* Select Action `slurm -> DockerHub`
 * Click `Run workflow`
 * In `user/name:tag of the base FaaSr image`, enter the DockerHub name of one of the image you created above, e.g. `yourname/base-python:2.1.0` or `yourname/base-r:2.1.0`
 * In `name of the FaaS-specific image to build`, enter the name of the image. This _does not_ include your account name or tag - e.g. for python the default names we use are: `slurm-python` and for r `slurm-r`

@@ -43,7 +43,7 @@ Before you can register and invoke workflows, you need to create secrets storing
 ### S3 data store servers
 
 - When creating a workflow with the [FaaSr Workflow Builder Web UI], you are asked to enter a name for your S3 data server(s)
-- The default compute server name for an S3 server is `S3`
+- The default data store name for an S3 server is `S3`
 - Assume the name of a data server you are setting the secrets for is `S3`, you need two secrets, named exactly as follows (replace `S3` with the name of the server you configured)
 - `S3_AccessKey`
 - `S3_SecretKey`
@@ -65,21 +65,21 @@ Before you can register and invoke workflows, you need to create secrets storing
 
 ### Google Cloud
 
-- The default compute server name for AWS Lambda is `GCP`
+- The default compute server name for Google Cloud is `GCP`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
 - You need one secret named: `GCP_SecretKey` 
 - The secret you store under this name is the secret key you obtained from Google Cloud
 
 ### OpenWhisk
 
-- The default compute server name for AWS Lambda is `OW`
+- The default compute server name for OpenWhisk is `OW`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
 - You need one secret named: `OW_APIKey` 
 - The secret you store under this name is the API key you obtained from your OpenWhisk provider
 
 ### Slurm
 
-- The default compute server name for AWS Lambda is `SLURM`
+- The default compute server name for Slurm is `SLURM`
 - You should **not** modify this name unless you plan to use FaaSr with custom [advanced] actions
 - You need one secret named: `SLURM_Token` 
 - The secret you store under this name is the JWT token you obtained from your Slurm provider

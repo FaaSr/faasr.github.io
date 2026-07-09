@@ -2,14 +2,14 @@
 
 ### faasr_get_file
 
-Usage: `faasr_get_file(server_name, remote_folder, remote_file, local_folder, local_file)`
+Usage: `faasr_get_file(local_file, remote_file, server_name="", local_folder=".", remote_folder=".")`
 
 This function gets (i.e. downloads) a file from an S3 bucket to be used by the FaaSr function.
 
 `server_name` is a string with name of the S3 bucket to use; it must match a name declared in the workflow configuration JSON file.
 This is an optional argument; if not provided, the default S3 server specified as `DefaultDataStore` in the workflow configuration JSON file is used.
 
-`remote_folder` is string with the name of the remote folder where the file is to be downloaded from. This is an optional argument that defaults to `""`
+`remote_folder` is string with the name of the remote folder where the file is to be downloaded from. This is an optional argument that defaults to `"."`
 
 `remote_file` is a string with the name for the file to be downloaded from the S3 bucket. This is a required argument.
 
@@ -26,7 +26,7 @@ faasr_get_file(server_name="My_Minio_Bucket", remote_file="myinput2.csv", local_
 
 ### faasr_put_file
 
-Usage: `faasr_put_file(server_name, local_folder, local_file, remote_folder, remote_file)`
+Usage: `faasr_put_file(local_file, remote_file, server_name="", local_folder=".", remote_folder=".")`
 
 This function puts (i.e. uploads) a file from the local FaaSr function to an S3 bucket.
 
@@ -37,7 +37,7 @@ This is an optional argument; if not provided, the default S3 server specified a
 
 `local_file` is a string with the name for the file to be uploaded to the S3 bucket. This is a required argument.
 
-`remote_folder` is string with the name of the remote folder where the file is to be uploaded to. This is an optional argument that defaults to `""`
+`remote_folder` is string with the name of the remote folder where the file is to be uploaded to. This is an optional argument that defaults to `"."`
 
 `remote_file` is a string with the name for the file to be uploaded to the S3 bucket. This is a required argument.
 
@@ -46,30 +46,30 @@ Examples:
 
 ```r
 faasr_put_file(local_file="output.csv", remote_folder="myfolder", remote_file="myoutput.csv")
-faasr_get_file(server_name="My_Minio_Bucket", local_file="output.csv", remote_file="myoutput.csv")
+faasr_put_file(server_name="My_Minio_Bucket", local_file="output.csv", remote_file="myoutput.csv")
 ```
 
 ### faasr_get_folder_list
 
-Usage: `folderlist <- faasr_get_folder_list(server_name, faasr_prefix)`
+Usage: `folderlist <- faasr_get_folder_list(server_name="", prefix="")`
 
 This function returns a list with the contents of a folder in the S3 bucket. 
 
 `server_name` is a string with name of the S3 bucket to use; it must match a name declared in the workflow configuration JSON file.
 This is an optional argument; if not provided, the default S3 server specified as `DefaultDataStore` in the workflow configuration JSON file is used.
 
-`faasr_prefix` is a string with the prefix of the folder in the S3 bucket. This is an optional argument that defaults to `""`
+`prefix` is a string with the prefix of the folder in the S3 bucket. This is an optional argument that defaults to `""`
 
 Examples:
 
 ```r
-mylist1 <- faasr_get_folder_list(server_name="My_Minio_Bucket", faasr_prefix="myfolder")
-mylist2 <- faasr_get_folder_list(server_name="My_Minio_Bucket", faasr_prefix="myfolder/mysubfolder")
+mylist1 <- faasr_get_folder_list(server_name="My_Minio_Bucket", prefix="myfolder")
+mylist2 <- faasr_get_folder_list(server_name="My_Minio_Bucket", prefix="myfolder/mysubfolder")
 ```
 
 ### faasr_delete_file
 
-Usage: `faasr_delete_file(server_name, remote_folder, remote_file)`
+Usage: `faasr_delete_file(remote_file, server_name="", remote_folder="")`
 
 This function deletes a file from the S3 bucket.
 
@@ -163,3 +163,61 @@ Example:
 ```r
 invocation_id <- faasr_invocation_id()
 ```
+
+### faasr_get_s3_creds
+
+Usage: `faasr_get_s3_creds(server_name="")`
+
+Returns the credentials and connection details for an S3 data store as a list, so you can construct your own S3 client when the standard get/put file APIs are not sufficient. (For Apache Arrow specifically, use `faasr_arrow_s3_bucket` above instead.)
+
+`server_name` is a string with the name of the S3 data store; if not provided, the `DefaultDataStore` specified in the workflow configuration JSON file is used.
+
+Example:
+
+```r
+creds <- faasr_get_s3_creds()
+```
+
+### faasr_secret
+
+Usage: `faasr_secret(secret_name)`
+
+Returns the value of a named secret from your workflow's secret store. This is useful for passing credentials such as third-party API keys to your function.
+
+`secret_name` is a string with the name of the secret to retrieve, as configured in your workflow.
+
+Example:
+
+```r
+api_key <- faasr_secret("OpenWeather_API_Key")
+```
+
+### faasr_return
+
+Usage: `faasr_return(return_value)`
+
+Returns a value from your user function to FaaSr. This is the mechanism used for [conditional invocation]: return `TRUE` or `FALSE` to determine which successor action(s) are invoked.
+
+`return_value` is the value (typically `TRUE` or `FALSE`) returned to FaaSr.
+
+Example:
+
+```r
+faasr_return(TRUE)
+```
+
+### faasr_exit
+
+Usage: `faasr_exit(message=NULL, error=TRUE, traceback=NULL)`
+
+Terminates the current function early and reports back to FaaSr, optionally with a message.
+
+`message` is a string with the message to report. `error` indicates whether this is an error exit (defaults to `TRUE`). `traceback` is an optional traceback string.
+
+Example:
+
+```r
+faasr_exit(message="Input file missing", error=TRUE)
+```
+
+[conditional invocation]: conditional.md
