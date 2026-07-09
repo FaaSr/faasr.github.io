@@ -33,6 +33,7 @@ nav:
     - 'Code repositories': 'repositories.md'
     - 'PR Processes': 'pull_requests.md'
     - 'Building containers': 'docker_build.md'
+    - 'Building a custom image': 'custom_image.md'
     - 'Developing the workflow builder': 'workflow_builder.md'
   - 'About': 'about.md'
   - 'Community': 'community.md'
