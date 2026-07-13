@@ -8,6 +8,8 @@ Consider the example below, where the action `DownloadData` always invokes `Test
 
 Then, _depending on the return value of_ `my_test()`, either `ComputeT` is invoked (return value `True`, green edge), or `ComputeF` is invoked (return value `False`, red edge) - but not both.
 
+Your user function signals this boolean to FaaSr by calling `faasr_return(TRUE)` or `faasr_return(FALSE)` (see the [R API] / [Python API] reference); a plain language `return` statement is not used for this purpose.
+
 ![alt text](conditional_example.png)
 
 Finally, the last action in the graph `ComputeNext` is invoked unconditionally. In effect, this implements the behavior of an if-then-else conditional execution in the workflow.
@@ -25,3 +27,5 @@ The example below shows an _invalid_ use of conditionals where `ComputeNext` has
 
 
 [DAG]: prog_model.md
+[R API]: r_api.md
+[Python API]: py_api.md

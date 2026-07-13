@@ -2,7 +2,7 @@
 
 FaaSr is research software that evolved from the experience with [FLARE](https://flare-forecast.org) to become a generally-applicable FaaS serverless middleware for R and Python functions
 
-The FaaSr software follows the MIT open-source license is funded in part by a grant from the [National Science Foundation](https://www.nsf.gov) (OAC-2450241 and OAC-2311124)). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
+The FaaSr software follows the MIT open-source license and is funded in part by a grant from the [National Science Foundation](https://www.nsf.gov) (OAC-2450241 and OAC-2311124). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
 
 You can help us show our impact to our sponsors and other users by linking to this Web site, and citing our software in publications that have resulted from the use of the software. If your project uses the software, please consider adding a "Powered by FaaSr" to your Web site, linking back to [faasr.io](https://faasr.io)
 

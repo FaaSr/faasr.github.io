@@ -4,7 +4,7 @@ The FaaSr model for programming, configuring, and deploying workflows is as foll
 
 - **FaaSr Workflow DAG**: describes the order in which your functions execute. Valid workflows must be _Directed Acyclic Graphs (DAG)_ (i.e. no loops) with a _single invocation entry_, and are described as a _JSON file_
 - **Action**: each node in the DAG is an _Action_ that represents the execution of a _user function_ in a _container_ deployed at runtime in a serverless cloud provider (e.g. a GitHub Action, or AWS Lambda)
-- **Function**: once deployed, each _Action_ executes a user-defined _Function_ in the contaier. A _Function_ is written in a high level language and published as a .R or .py file in a _GitHub Function repo_. A _Function_ takes *input arguments* and returns either true (successful excecution) or false (unsuccessful execution)
+- **Function**: once deployed, each _Action_ executes a user-defined _Function_ in the container. A _Function_ is written in a high level language and published as a .R or .py file in a _GitHub Function repo_. A _Function_ takes *input arguments* and returns either true (successful execution) or false (unsuccessful execution)
 - **Input/output**: a serverless _Action_ is _stateless_: the local memory and storage in a container is discarded when the _Action_ completes. Therefore, all data that must persist across invocations must be stored as _files_ in one or more S3 cloud *data store* servers. FaaSr provides an *Application Programming Interface (API)* to store/retrieve files to/from S3 for this.
 
 
