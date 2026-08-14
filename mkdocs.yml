@@ -18,6 +18,7 @@ nav:
     - 'Invoking workflows': 'invoke_workflow.md'
     - 'Retrieving logs': 'logs.md'
     - 'Obtaining an S3 bucket': 's3.md'
+    - 'Setting up Backblaze B2': 'backblaze.md'
     - 'Concurrent actions and ranks': 'rank.md'
     - 'Conditional invocation': 'conditional.md'
     - 'Invocation IDs': 'invocationid.md'
