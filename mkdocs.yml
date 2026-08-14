@@ -28,6 +28,7 @@ nav:
     - 'Running on AWS Lambda': 'aws_lambda.md'
     - 'Running on Google Cloud': 'google_cloud.md'
     - 'Running on Kubernetes (NRP)': 'kubernetes.md'
+    - 'Running on NRP: step-by-step': 'nrp.md'
     - 'Default values': 'defaults.md'
     - 'Advanced usage': 'advanced.md'
     - 'Provisioning EphFlow VMs': 'vm.md'
