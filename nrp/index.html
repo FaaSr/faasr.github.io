@@ -1,0 +1,1990 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://faasr.io/nrp/">
+      
+      
+        <link rel="prev" href="../kubernetes/">
+      
+      
+        <link rel="next" href="../defaults/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Running on NRP: step-by-step - FaaSr - Serverless workflows made easy</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#running-faasr-on-the-national-research-platform-nrp" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="FaaSr - Serverless workflows made easy" class="md-header__button md-logo" aria-label="FaaSr - Serverless workflows made easy" data-md-component="logo">
+      
+  <img src="../assets/faasr_logo.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            FaaSr - Serverless workflows made easy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Running on NRP: step-by-step
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../tutorial/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Tutorial
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../prog_model/" class="md-tabs__link">
+          
+  
+  
+  User Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../repositories/" class="md-tabs__link">
+          
+  
+  
+  Dev Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../community/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Community
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../contact/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contact
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="FaaSr - Serverless workflows made easy" class="md-nav__button md-logo" aria-label="FaaSr - Serverless workflows made easy" data-md-component="logo">
+      
+  <img src="../assets/faasr_logo.jpg" alt="logo">
+
+    </a>
+    FaaSr - Serverless workflows made easy
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prog_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FaaSr workflow model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow_repo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up the FaaSr-workflow repo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating and editing workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functionexamples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows and functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../register_workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registering workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../invoke_workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invoking workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Retrieving logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Obtaining an S3 bucket
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backblaze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting up Backblaze B2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrent actions and ranks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conditional/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conditional invocation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../invocationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invocation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dependences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package dependences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../r_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    R API reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../py_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../credentials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating cloud credentials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aws_lambda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running on AWS Lambda
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../google_cloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running on Google Cloud
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kubernetes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running on Kubernetes (NRP)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running on NRP: step-by-step
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running on NRP: step-by-step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-get-nrp-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Get NRP access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-install-the-cli-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Install the CLI tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-download-your-kubeconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Download your kubeconfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-authenticate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Authenticate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-create-a-service-account-token-the-jwt-faasr-uses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Create a service-account token (the JWT FaaSr uses)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-store-your-secrets-in-the-faasr-workflow-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Store your secrets in the FaaSr-workflow repo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-get-the-endpoint-and-ca-certificate-for-the-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Get the endpoint and CA certificate for the config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-build-the-workflow-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Build the workflow configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-register-and-invoke" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Register and invoke
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-watch-and-inspect-the-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Watch and inspect the Job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defaults/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Default values
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Provisioning EphFlow VMs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dev Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dev Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repositories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pull_requests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Processes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom_image/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building a custom image
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow_builder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing the workflow builder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../community/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Community
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-get-nrp-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Get NRP access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-install-the-cli-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Install the CLI tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-download-your-kubeconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Download your kubeconfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-authenticate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Authenticate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-create-a-service-account-token-the-jwt-faasr-uses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Create a service-account token (the JWT FaaSr uses)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-store-your-secrets-in-the-faasr-workflow-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Store your secrets in the FaaSr-workflow repo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-get-the-endpoint-and-ca-certificate-for-the-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Get the endpoint and CA certificate for the config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-build-the-workflow-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Build the workflow configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-register-and-invoke" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Register and invoke
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-watch-and-inspect-the-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Watch and inspect the Job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="running-faasr-on-the-national-research-platform-nrp">Running FaaSr on the National Research Platform (NRP)</h1>
+<p>This is a step-by-step walkthrough for running FaaSr workflows on the <a href="https://nationalresearchplatform.org/">National Research Platform (NRP)</a> — the <strong>Nautilus</strong> Kubernetes cluster — from an empty machine to a workflow whose actions run as Kubernetes Jobs on NRP.</p>
+<p>NRP/Nautilus is a <strong>single shared, multi-institution Kubernetes cluster</strong>. You do <strong>not</strong> create your own cluster — you are granted a <strong>namespace</strong> inside Nautilus and run your Jobs there. For the Kubernetes compute-server field reference, see <a href="../kubernetes/">Running on Kubernetes</a>. This page focuses on the NRP-specific setup.</p>
+<h2 id="1-get-nrp-access">1. Get NRP access</h2>
+<ol>
+<li>Go to the <a href="https://nrp.ai">NRP portal</a> and <strong>Log In</strong> — authentication is via CILogon; pick your institution.</li>
+<li>Get access to a <strong>namespace</strong>:<ul>
+<li><strong>Students:</strong> ask your advisor to add you to their namespace.</li>
+<li><strong>Faculty/staff/postdocs:</strong> request a namespace via Nautilus support (the <a href="https://nationalresearchplatform.org/">Matrix/Slack support channels</a>).</li>
+</ul>
+</li>
+<li>
+<p>Read and follow the <a href="https://docs.nationalresearchplatform.org/">NRP Acceptable Use Policy and cluster policies</a>. One rule matters for FaaSr:</p>
+<div class="admonition warning">
+<p class="admonition-title">No never-ending Jobs</p>
+<p>NRP bans workloads that run forever (a <code>sleep</code>, an idle server, etc.). FaaSr actions run a function and exit on their own, so normal workflows are fine — just don't set an action to block indefinitely.</p>
+</div>
+</li>
+</ol>
+<h2 id="2-install-the-cli-tools">2. Install the CLI tools</h2>
+<p>You need <strong><code>kubectl</code></strong> and, for NRP specifically, the <strong><code>kubelogin</code></strong> OIDC plugin (without it the NRP kubeconfig will not authenticate).</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># kubectl (Linux amd64; see kubernetes.io for other platforms)</span>
+curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>~/.local/bin/kubectl<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://dl.k8s.io/release/</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://dl.k8s.io/release/stable.txt<span class="k">)</span><span class="s2">/bin/linux/amd64/kubectl"</span>
+chmod<span class="w"> </span>+x<span class="w"> </span>~/.local/bin/kubectl
+
+<span class="c1"># kubelogin, installed under the name kubectl expects (kubectl-oidc_login)</span>
+<span class="nv">KVER</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://api.github.com/repos/int128/kubelogin/releases/latest<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.tag_name<span class="k">)</span>
+curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>/tmp/kubelogin.zip<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"https://github.com/int128/kubelogin/releases/download/</span><span class="si">${</span><span class="nv">KVER</span><span class="si">}</span><span class="s2">/kubelogin_linux_amd64.zip"</span>
+unzip<span class="w"> </span>-o<span class="w"> </span>/tmp/kubelogin.zip<span class="w"> </span>kubelogin<span class="w"> </span>-d<span class="w"> </span>/tmp/
+mv<span class="w"> </span>/tmp/kubelogin<span class="w"> </span>~/.local/bin/kubectl-oidc_login
+chmod<span class="w"> </span>+x<span class="w"> </span>~/.local/bin/kubectl-oidc_login
+</code></pre></div>
+<p>Make sure <code>~/.local/bin</code> is on your <code>PATH</code> (or install to <code>/usr/local/bin</code> with <code>sudo</code>).</p>
+<h2 id="3-download-your-kubeconfig">3. Download your kubeconfig</h2>
+<p>NRP serves a ready-made kubeconfig that uses OIDC:</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.kube
+curl<span class="w"> </span>-o<span class="w"> </span>~/.kube/config<span class="w"> </span>-fSL<span class="w"> </span><span class="s2">"https://nrp.ai/config"</span>
+</code></pre></div>
+<p>This sets the context <code>nautilus</code>, embeds the cluster's API endpoint and CA certificate, and wires up the <code>oidc-login</code> exec plugin.</p>
+<h2 id="4-authenticate">4. Authenticate</h2>
+<p>The first <code>kubectl</code> command triggers a browser login through CILogon:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;
+</code></pre></div>
+<ul>
+<li><code>No resources found in &lt;your-namespace&gt; namespace</code> means you're authenticated and <strong>have access</strong> to the namespace (there are just no pods yet).</li>
+<li>Your OIDC token lasts ~30 minutes and auto-refreshes; <code>kubectl oidc-login clean</code> forces a fresh login (useful right after you're added to a new namespace).</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Multi-account browser gotcha</p>
+<p>If you're signed into several Google/GitHub accounts in your default browser, CILogon may auto-select the wrong identity and you'll see <strong>"Permission denied — authenticate with the source you've previously signed up with."</strong> The fix is to make the login open in a <strong>fresh incognito window</strong>. Either open the printed device-code URL in incognito, or point kubelogin at an incognito browser by adding these args to the <code>oidc-login</code> block in <code>~/.kube/config</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--browser-command=/path/to/incognito.sh</span><span class="w">   </span><span class="c1"># a script that runs: google-chrome --incognito "$@"</span>
+</code></pre></div>
+<p>(or add <code>--grant-type=device-code</code> and <code>--skip-open-browser</code>, then open the URL yourself in incognito).</p>
+</div>
+<h2 id="5-create-a-service-account-token-the-jwt-faasr-uses">5. Create a service-account token (the JWT FaaSr uses)</h2>
+<p>Your OIDC login authenticates <strong>you</strong> interactively and expires quickly — that can't be used by a GitHub Action. FaaSr instead needs a long-lived <strong>Kubernetes ServiceAccount token</strong> (a JWT). Mint one in your namespace:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># see what you're allowed to do, and whether a service account already exists</span>
+kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span>create<span class="w"> </span>serviceaccounts/token<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;
+kubectl<span class="w"> </span>get<span class="w"> </span>serviceaccounts<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;
+
+<span class="c1"># if a service account already exists (e.g. one set up for your group), just mint a token for it:</span>
+kubectl<span class="w"> </span>create<span class="w"> </span>token<span class="w"> </span>&lt;service-account&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span>--duration<span class="o">=</span>720h
+</code></pre></div>
+<p>If you are a <strong>namespace admin</strong> and need to create one from scratch:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>serviceaccount<span class="w"> </span>faasr-runner<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;
+kubectl<span class="w"> </span>create<span class="w"> </span>role<span class="w"> </span>faasr-jobs<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--verb<span class="o">=</span>create,get,list,watch,delete<span class="w"> </span>--resource<span class="o">=</span>jobs,pods,pods/log
+kubectl<span class="w"> </span>create<span class="w"> </span>rolebinding<span class="w"> </span>faasr-runner-jobs<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--role<span class="o">=</span>faasr-jobs<span class="w"> </span>--serviceaccount<span class="o">=</span>&lt;your-namespace&gt;:faasr-runner
+kubectl<span class="w"> </span>create<span class="w"> </span>token<span class="w"> </span>faasr-runner<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span>--duration<span class="o">=</span>720h
+</code></pre></div>
+<p>The command prints an <code>eyJ...</code> string — that is your token. (NRP may cap the duration; <code>--duration</code> requests an upper bound.)</p>
+<h2 id="6-store-your-secrets-in-the-faasr-workflow-repo">6. Store your secrets in the FaaSr-workflow repo</h2>
+<p>In your <a href="../workflow_repo/">FaaSr-workflow repo</a>, add GitHub Secrets (see <a href="../credentials/">Creating cloud credentials</a>):</p>
+<ul>
+<li><strong><code>&lt;K8sServerName&gt;_Token</code></strong> — the JWT from step 5. The name is your Kubernetes compute server's name followed by <code>_Token</code> (e.g. server <code>K8s</code> → secret <code>K8s_Token</code>).</li>
+<li>Your <strong>data-store credentials</strong> (e.g. <code>&lt;DataStore&gt;_AccessKey</code> / <code>&lt;DataStore&gt;_SecretKey</code>).</li>
+</ul>
+<p>You can set the token from the CLI without printing it:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>token<span class="w"> </span>&lt;service-account&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span>--duration<span class="o">=</span>720h<span class="w"> </span>&gt;<span class="w"> </span>k8s_token.txt
+gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>K8s_Token<span class="w"> </span>--repo<span class="w"> </span>&lt;your-username&gt;/FaaSr-workflow<span class="w"> </span>&lt;<span class="w"> </span>k8s_token.txt
+</code></pre></div>
+<h2 id="7-get-the-endpoint-and-ca-certificate-for-the-config">7. Get the endpoint and CA certificate for the config</h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># API server endpoint</span>
+kubectl<span class="w"> </span>config<span class="w"> </span>view<span class="w"> </span>--minify<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.clusters[0].cluster.server}'</span><span class="p">;</span><span class="w"> </span><span class="nb">echo</span>
+
+<span class="c1"># CA certificate (base64) — this is the SSLCertificate value</span>
+kubectl<span class="w"> </span>config<span class="w"> </span>view<span class="w"> </span>--minify<span class="w"> </span>--raw<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.clusters[0].cluster.certificate-authority-data}'</span><span class="p">;</span><span class="w"> </span><span class="nb">echo</span>
+</code></pre></div>
+<h2 id="8-build-the-workflow-configuration">8. Build the workflow configuration</h2>
+<p>Configure two compute servers: your normal <strong>GitHub Actions</strong> server (which submits the Jobs) and the <strong>Kubernetes</strong> server. See <a href="../kubernetes/">Running on Kubernetes</a> for the full field reference; the NRP-specific essentials:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">"ComputeServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"GH"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"FaaSType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GitHubActions"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"UserName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_USERNAME"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"ActionRepoName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FaaSr-workflow"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Branch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"main"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"UseSecretStore"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"K8s"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"FaaSType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Kubernetes"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://&lt;nrp-api-server&gt;"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"Namespace"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;your-namespace&gt;"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"UseSecretStore"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"AllowSelfSignedCertificate"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"SSLCertificate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base64 CA cert from step 7&gt;"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"MaxCPU"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"MaxMemory"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"TimeLimit"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"AdditionalTimeToLive"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"NumberOfRetries"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="admonition important">
+<p class="admonition-title"><code>UseSecretStore</code> must be <code>false</code> on the Kubernetes server</p>
+<p>This is how your data-store credentials get passed to the Job's pod. With <code>UseSecretStore: true</code>, the pod receives no S3 credentials and fails with <code>NoCredentialsError</code>. The GitHub Actions server keeps <code>UseSecretStore: true</code>; the cluster token still comes from the <code>&lt;K8sServerName&gt;_Token</code> secret.</p>
+</div>
+<p>Point the Kubernetes action(s) at a FaaSr Kubernetes container image under <code>ActionContainers</code> (e.g. <code>faasr/kubernetes-r</code> / <code>faasr/kubernetes-python</code>, or your own image that the cluster can pull).</p>
+<h2 id="9-register-and-invoke">9. Register and invoke</h2>
+<ol>
+<li>Upload your workflow JSON to your <a href="../workflow_repo/">FaaSr-workflow repo</a>.</li>
+<li>Run <strong><code>FAASR REGISTER</code></strong> (tick <em>Allow custom containers</em> if your image is not a native FaaSr image) — see <a href="../register_workflow/">Registering workflows</a>.</li>
+<li>Run <strong><code>FAASR INVOKE</code></strong> — see <a href="../invoke_workflow/">Invoking workflows</a>. The entry action runs on GitHub Actions and submits a <strong>Kubernetes Job per Kubernetes action</strong> into your namespace.</li>
+</ol>
+<h2 id="10-watch-and-inspect-the-job">10. Watch and inspect the Job</h2>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>jobs,pods<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span>-w<span class="w">      </span><span class="c1"># watch the Job appear and complete</span>
+kubectl<span class="w"> </span>logs<span class="w"> </span>&lt;pod&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w">            </span><span class="c1"># the function's output (S3 reads/writes)</span>
+kubectl<span class="w"> </span>describe<span class="w"> </span>job<span class="w"> </span>&lt;job&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w">    </span><span class="c1"># events, completions, deadline</span>
+kubectl<span class="w"> </span>get<span class="w"> </span>job<span class="w"> </span>&lt;job&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;your-namespace&gt;<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="c1"># full spec: image, resources, TTL</span>
+</code></pre></div>
+<p>A finished Job (and its pod, and thus its logs) is auto-deleted after <code>AdditionalTimeToLive</code> seconds (<code>ttlSecondsAfterFinished</code>). <strong>Bump <code>AdditionalTimeToLive</code></strong> in the config if you want a completed Job to linger for inspection.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause / fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NoCredentialsError</code> in the pod</td>
+<td>The Kubernetes server has <code>UseSecretStore: true</code>; set it to <strong><code>false</code></strong>.</td>
+</tr>
+<tr>
+<td>Browser login denied ("authenticate with the source you've previously signed up with")</td>
+<td>Multi-account cookie collision — log in via a <strong>fresh incognito</strong> window (step 4).</td>
+</tr>
+<tr>
+<td>Auth error on register/invoke</td>
+<td>The service-account token expired — re-mint (step 5) and update the <code>&lt;K8sServerName&gt;_Token</code> secret.</td>
+</tr>
+<tr>
+<td>Job shows <code>DeadlineExceeded</code></td>
+<td>The action ran longer than <code>TimeLimit</code> (or is stuck, e.g. retrying a failed S3 call). Raise <code>TimeLimit</code> or fix the underlying error.</td>
+</tr>
+<tr>
+<td><code>ImagePullBackOff</code> on the pod</td>
+<td>The cluster can't pull your action image — make it public or push it somewhere Nautilus can reach.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      FaaSr is funded in part by grants from the National Science Foundation (OAC-2450241 and OAC-2311124). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
