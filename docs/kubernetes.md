@@ -34,25 +34,46 @@ In the [workflow builder], use **Edit Compute Servers** to add a Kubernetes serv
 | Field | Meaning | Example |
 | --- | --- | --- |
 | `FaaSType` | must be `Kubernetes` | `Kubernetes` |
-| `Endpoint` | the cluster's API server URL | `https://129.146.139.205:6443` |
+| `Endpoint` | the cluster's API server URL | `https://<api-server>:6443` |
 | `Namespace` | the namespace your Jobs run in | `faasr-jobs` |
-| `AllowSelfSignedCertificate` | allow a self-signed cluster certificate (optional) | `true` |
-| `SSLCertificate` | the cluster's SSL/CA certificate, if required (optional) | *(certificate)* |
-| `CPUsPerTask` | max CPU per container, in **millicores** (optional) | `1000` |
-| `Memory` | memory per container, in MB (optional) | `512` |
+| `UseSecretStore` | **must be `false`** for Kubernetes (see note below) | `false` |
+| `AllowSelfSignedCertificate` | allow a self-signed cluster certificate | `true` |
+| `SSLCertificate` | the cluster's CA certificate (base64), used to verify the API server | *(base64 CA cert)* |
+| `MaxCPU` | max CPU per container, in **millicores** (optional) | `500` |
+| `MaxMemory` | memory per container, in **MB** (optional) | `1000` |
+| `TimeLimit` | max active runtime per Job, in seconds (sets `activeDeadlineSeconds`) | `300` |
+| `AdditionalTimeToLive` | seconds a finished Job is kept before auto-deletion (sets `ttlSecondsAfterFinished`) | `60` |
+| `NumberOfRetries` | Job backoff retry limit | `10` |
 
-Minimal JSON (token supplied via the secret store):
+Example (a Kubernetes server alongside the GitHub Actions server that submits its Jobs):
 
 ```json
 "ComputeServers": {
+  "GH": {
+    "FaaSType": "GitHubActions",
+    "UserName": "YOUR_USERNAME",
+    "ActionRepoName": "FaaSr-workflow",
+    "Branch": "main",
+    "UseSecretStore": true
+  },
   "K8s": {
     "FaaSType": "Kubernetes",
-    "Endpoint": "https://129.146.139.205:6443",
+    "Endpoint": "https://<api-server>:6443",
     "Namespace": "faasr-jobs",
-    "UseSecretStore": true
+    "UseSecretStore": false,
+    "AllowSelfSignedCertificate": true,
+    "SSLCertificate": "<base64 CA cert>",
+    "MaxCPU": 500,
+    "MaxMemory": 1000,
+    "TimeLimit": 300,
+    "AdditionalTimeToLive": 60,
+    "NumberOfRetries": 10
   }
 }
 ```
+
+!!! important "`UseSecretStore` must be `false` on the Kubernetes server"
+    Unlike other compute servers, the Kubernetes server must set `UseSecretStore: false` so that your **data-store credentials are passed to the Job in its payload**. With `UseSecretStore: true`, the Job's pod receives no S3 credentials and fails with `NoCredentialsError`. The GitHub Actions server that *submits* the Jobs keeps `UseSecretStore: true`, and the cluster token is still supplied as the `<ServerName>_Token` secret.
 
 ## Register and invoke
 
@@ -72,8 +93,10 @@ NRP is a Kubernetes cluster, so the steps above apply directly:
 
 ## Notes
 
-- **Token expiry:** service-account JWTs are often time-limited. If registration or invocation fails with an authentication error, your token may have expired — obtain a fresh one and update the `<ServerName>_Token` secret.
-- **CPU units:** `CPUsPerTask` is specified in **millicores** (e.g. `1000` = 1 vCPU), following Kubernetes conventions.
+- **`UseSecretStore` must be `false`** on the Kubernetes server (see above) — that is how data-store credentials reach the Job's pod.
+- **Token expiry:** service-account JWTs are often time-limited. If registration or invocation fails with an authentication error, obtain a fresh token and update the `<ServerName>_Token` secret.
+- **Resource units:** `MaxCPU` is in **millicores** (e.g. `1000` = 1 vCPU); `MaxMemory` is in **MB**.
+- **Timeouts and cleanup:** `TimeLimit` sets the Job's `activeDeadlineSeconds` (max active runtime); `AdditionalTimeToLive` sets `ttlSecondsAfterFinished` — how long a finished Job (and its pod, and thus its logs) persists before Kubernetes auto-deletes it. Increase it if you want to inspect finished Jobs with `kubectl logs`.
 - **Namespace permissions:** the service account behind the token needs permission to create, run, and delete Jobs in the target namespace.
 
 [FaaSr-workflow repo]: workflow_repo.md
